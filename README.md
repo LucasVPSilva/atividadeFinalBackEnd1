@@ -5,7 +5,7 @@
 <p align="center"> Essa API foi desenvolvida como atividade final no módulo de Back-End 1 do curso
 de Full Stack da Growdev</p>
 
-## 🚀 Tecnologias
+# 🚀 Tecnologias
 
 Esse projeto foi desenvolvido com as seguintes tecnologias:
 
@@ -14,7 +14,7 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 -   Express
 -   API Rest
 
-## 💻 Funcionalidades
+# 💻 Funcionalidades
 
 As funcionalidades do projeto são:
 
@@ -24,6 +24,6 @@ As funcionalidades do projeto são:
 -   CRUD de Recados
 
 
-## 📝 Licença
+# 📝 Licença
 
 Desenvolvido por Lucas Vinicius Pires Silva
