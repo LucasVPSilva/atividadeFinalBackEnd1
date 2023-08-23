@@ -10,7 +10,7 @@ const users = [];
 
 // Função para listar os usuários: 
 
-app.get("/", (req, res) => {
+app.get("/user", (req, res) => {
     if (users.length === 0) {
         return res.status(404).json({
             mensagem: "Nenhum usuário encontrado!"
@@ -19,7 +19,6 @@ app.get("/", (req, res) => {
 
     res.json(users)
 })
-
 
 // Função para criar novos usuários: 
 
