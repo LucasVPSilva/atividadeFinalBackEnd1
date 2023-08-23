@@ -5,7 +5,8 @@ const app = express();
 app.use(express.json());
 const port = 8080
 
-const users = []
+const users = [];
+
 
 // Função para listar os usuários: 
 
@@ -56,14 +57,15 @@ app.post("/newuser", (req, res) => {
         name,
         email,
         password,
-        tasks: []
+        messages: []
 
     }
 
     users.push(user)
 
     res.status(201).json({
-        message: `Usuário ${user.name} cadastrado com sucesso!`
+        message: `Usuário ${user.name} cadastrado com sucesso!`,
+        data: user
     })
 
 });
@@ -154,107 +156,137 @@ app.delete("/users/:id", (req, res) => {
 });
 
 
-// Parte das tasks:
+///////      ----------- Parte dos recados: -------------   //////
 
-const tasks = [{
-    id: uuidv4(),
-    title: "Comprar pão",
-    description: "Comprar pão na padaria!"
-}];
 
-// Função para listar as tasks:
+// Função para listar os recados:
 
-app.get("/tasks", (req, res) => {
-    if (tasks.length === 0) {
+app.get("/messages/:id", (req, res) => {
+    const { id } = req.params;
+
+    // buscar o usuario
+    const user = users.find(user => user.id == id);
+
+    if (!user) {
         return res.status(404).json({
-            message: 'Nenhuma tarefa encontrada!'
+            message: "Usuário não localizado!"
         })
     }
 
-    res.json(tasks)
+    if (user.messages.length === 0) {
+        return res.status(404).json({
+            message: 'Nenhum recado encontrado!'
+        })
+    }
+
+    res.json(user.messages)
 
 })
 
-// Função para criar tarefas:
+// Função para criar recados:
 
-app.post("/tasks", (req, res) => {
+app.post("/messages/:id", (req, res) => {
+    const { id } = req.params
     const { title, description } = req.body;
 
     if (!title) {
-        return res.status(404).json({
-            message: "O título da tarefa deve ser informado!"
+        return res.status(400).json({
+            message: "O título do recado deve ser informado!"
         })
     }
     if (!description) {
-        return res.status(404).json({
-            message: "A descrição da tarefa deve ser informado!"
+        return res.status(400).json({
+            message: "A descrição do recado deve ser informado!"
         })
     }
 
-    const repeatTask = tasks.find(task => task.title === title);
+    // buscar o usuario
+    const user = users.find(user => user.id == id);
+
+    if (!user) {
+        return res.status(404).json({
+            message: "Usuário não localizado!"
+        })
+    }
+
+    const repeatTask = user.messages.find(task => task.title === title);
     if (repeatTask) {
         return res.status(400).json({
             message: "Já existe uma tarefa com esse título!"
         })
     }
 
-    const task = { id: uuidv4(), title, description }
-    tasks.push(task)
+    const message = { index: uuidv4(), title, description }
+    user.messages.push(message)
 
     res.status(201).json({
-        message: `A tarefa ${task.title} cadastrada com sucesso!`
+        message: `A tarefa ${message.title} cadastrada com sucesso!`
     })
 
 });
 
 // Função para atualizar a tarefa:
 
-app.put("/tasks/:id", (req, res) => {
-    const { id } = req.params;
-    const { title, description } = req.body;
+app.put("/messages/:id/:index", (req, res) => {
+    const { id, index } = req.params;
+    const { title: newTitle } = req.body;
 
-    const findTask = tasks.find(task => task.id === id);
-    if (!findTask) {
+    // buscar o usuario
+
+    const user = users.find(user => user.id == id);
+
+    if (!user) {
         return res.status(404).json({
-            message: "Tarefa não localizada!"
-        })
+            message: "Usuário não localizado!",
+
+        });
     }
 
-    if (!title) {
-        return res.status(400).json({
-            message: "O novo título da tarefa deve ser informado!"
-        })
+    const messageFind = user.messages.find(message => message.index == index);
+
+
+
+    if (!messageFind) {
+        return res.status(404).json({
+            message: 'Recado não localizado!',
+        });
     }
 
-    findTask.title = title
+    messageFind.title = newTitle;
+
     res.status(200).json({
-        message: `A tarefa ${findTask.title} atualizado com sucesso!`
+        message: `A tarefa atualizado com sucesso!`
     })
 
-    if (description) {
-        findTask.description = description;
-
-    }
 
 
 });
 
 // Função para deletar tarefa:
 
-app.delete("/tasks/:id", (req, res) => {
-    const { id } = req.params;
+app.delete("/messages/:id/:index", (req, res) => {
+    const { id, index } = req.params;
 
-    const findTask = tasks.findIndex(task => task.id === id);
+    const user = users.find(user => user.id == id);
 
-    if (findTask == -1) {
-        res.status(404).json({
-            message: "Tarefa não localizada!"
+    if (!user) {
+        return res.status(404).json({
+            message: "Usuário não localizado!",
+
         });
     }
 
-    tasks.splice(findTask, 1);
+    const findMessage = user.messages.findIndex(message => message.index == index);
+
+    if (findMessage == -1) {
+        res.status(404).json({
+            message: "Recado não localizado!"
+        });
+    }
+
+    user.messages.splice(findMessage, 1);
     res.status(200).json({
-        message: `A tarefa deletada com sucesso!`
+        message: `Recado deletado com sucesso!`
     })
 
 })
