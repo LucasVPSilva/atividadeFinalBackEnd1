@@ -254,7 +254,7 @@ app.put("/messages/:id/:index", (req, res) => {
     messageFind.title = newTitle;
 
     res.status(200).json({
-        message: `A tarefa atualizado com sucesso!`
+        message: `O recado foi atualizado com sucesso!`
     })
 
 
@@ -262,6 +262,7 @@ app.put("/messages/:id/:index", (req, res) => {
 });
 
 // Função para deletar tarefa:
+
 
 app.delete("/messages/:id/:index", (req, res) => {
     const { id, index } = req.params;
