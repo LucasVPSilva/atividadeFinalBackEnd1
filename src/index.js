@@ -8,7 +8,7 @@ const port = 8080
 const users = [];
 
 
-// Função para listar os usuários: 
+// Listar os usuários: 
 
 app.get("/user", (req, res) => {
     if (users.length === 0) {
@@ -20,7 +20,7 @@ app.get("/user", (req, res) => {
     res.json(users)
 })
 
-// Função para criar novos usuários: 
+// Criar novos usuários: 
 
 app.post("/newuser", (req, res) => {
     const { name, email, password } = req.body;
@@ -228,7 +228,7 @@ app.post("/messages/:id", (req, res) => {
 
 app.put("/messages/:id/:index", (req, res) => {
     const { id, index } = req.params;
-    const { title: newTitle } = req.body;
+    const { title: newTitle, description: newDescription } = req.body;
 
     // buscar o usuario
 
@@ -251,7 +251,8 @@ app.put("/messages/:id/:index", (req, res) => {
         });
     }
 
-    messageFind.title = newTitle;
+    messageFind.title = newTitle ? newTitle : messageFind.title;
+    messageFind.description = newDescription ? newDescription : messageFind.description;
 
     res.status(200).json({
         message: `O recado foi atualizado com sucesso!`
@@ -261,7 +262,7 @@ app.put("/messages/:id/:index", (req, res) => {
 
 });
 
-// Função para deletar tarefa:
+// Deletar recados:
 
 
 app.delete("/messages/:id/:index", (req, res) => {
