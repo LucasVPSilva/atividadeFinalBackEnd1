@@ -103,7 +103,8 @@ app.post("/login", (req, res) => {
 
 
     res.status(201).json({
-        message: `Seja bem vindo ${findUser.name}`
+        message: `Seja bem vindo ${findUser.name}`,
+        userId: findUser.id,
     });
 
 });
